@@ -34,7 +34,6 @@ fun SplashScreen(navController: NavController) {
         navController.navigate(AppScreens.ProductSearchScreen.route)
     }
 
-
     Splash()
 }
 

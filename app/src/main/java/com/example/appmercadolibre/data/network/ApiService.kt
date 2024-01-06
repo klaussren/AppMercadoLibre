@@ -3,6 +3,7 @@ package com.example.appmercadolibre.data.network
 import com.example.appmercadolibre.data.model.CategoriesModel
 import com.example.appmercadolibre.data.model.ChildrenCategoriesModel
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -33,7 +34,7 @@ interface ApiService {
 
     @GET("/categories/{category_id}")
     suspend fun getSubCategories(
-        @Query("category_id") categoryId: String
+        @Path("category_id") categoryId: String
     ): ChildrenCategoriesModel
 
 

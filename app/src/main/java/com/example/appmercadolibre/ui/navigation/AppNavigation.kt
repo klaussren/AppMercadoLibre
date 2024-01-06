@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.appmercadolibre.ui.screens.MainScreen
 import com.example.appmercadolibre.ui.screens.ProductDetailsScreen
 import com.example.appmercadolibre.ui.screens.ProductSearchScreen
 import com.example.appmercadolibre.ui.screens.ProductShearchViewModel
@@ -18,6 +19,10 @@ fun AppNavigation(productShearchViewModel: ProductShearchViewModel) {
 
         composable(AppScreens.SplashScreen.route) {
             SplashScreen(navController)
+        }
+
+        composable(AppScreens.MainScreen.route) {
+            MainScreen(navController)
         }
         composable(AppScreens.ProductSearchScreen.route) {
             ProductSearchScreen(productShearchViewModel,navController)
