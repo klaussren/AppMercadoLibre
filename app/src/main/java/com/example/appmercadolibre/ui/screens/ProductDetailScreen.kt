@@ -9,9 +9,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ProductDetailsScreen(navController: NavController){
-    LaunchedEffect(key1 = true){
-        delay(2000)
-        navController.popBackStack()
-        navController.navigate(AppScreens.ProductSearchScreen.route)
-    }
+
+
+
 }

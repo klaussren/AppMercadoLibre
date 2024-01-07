@@ -23,7 +23,7 @@ fun AppNavigation(productShearchViewModel: ProductShearchViewModel, searchItemsV
         }
 
         composable(AppScreens.MainScreen.route) {
-            MainScreen(navController,searchItemsViewModel)
+            MainScreen(navController,searchItemsViewModel,productShearchViewModel)
         }
         composable(AppScreens.ProductSearchScreen.route) {
             ProductSearchScreen(productShearchViewModel,navController)

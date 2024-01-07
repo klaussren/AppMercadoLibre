@@ -2,6 +2,7 @@ package com.example.appmercadolibre.data.network
 
 import com.example.appmercadolibre.data.model.CategoriesModel
 import com.example.appmercadolibre.data.model.ChildrenCategoriesModel
+import com.example.appmercadolibre.data.model.ItemDetailModel
 import com.example.appmercadolibre.data.model.ItemListModel
 import com.example.appmercadolibre.data.model.ItemsModel
 import retrofit2.Response
@@ -46,6 +47,11 @@ interface ApiService {
     suspend fun searchItemsByQuery(
         @Query("q") query: String
     ): Response<ItemListModel>
+
+    @GET("/items/{item_id}")
+    suspend fun getItemDetail(
+        @Path("item_id") category: String
+    ): Response<ItemDetailModel>
 
 
 }

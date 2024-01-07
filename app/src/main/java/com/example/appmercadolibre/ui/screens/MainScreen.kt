@@ -3,38 +3,40 @@ package com.example.appmercadolibre.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SearchBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.appmercadolibre.data.model.ItemsModel
-import com.example.appmercadolibre.ui.navigation.AppScreens
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (navController: NavController,searchItemsViewModel: SearchItemsViewModel) {
+fun MainScreen (navController: NavController,searchItemsViewModel: SearchItemsViewModel,productShearchViewModel: ProductShearchViewModel) {
 
 
     val searchText by searchItemsViewModel.searchText.collectAsState()
@@ -73,14 +75,16 @@ fun MainScreen (navController: NavController,searchItemsViewModel: SearchItemsVi
          paddingValues ->
             MainScreenContent(
                 searchResults = searchResults.body()?.results.orEmpty(),
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.padding(paddingValues),
+                productShearchViewModel,
+                navController
             )
     }
 }
 
 
 @Composable
-fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modifier) {
+fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modifier, productShearchViewModel: ProductShearchViewModel, navController: NavController) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -89,14 +93,13 @@ fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modi
             // Si hay resultados de búsqueda, mostrar la lista de elementos
             LazyColumn {
                 itemsIndexed(searchResults) { index, item ->
-                    SearchItemCard(item = item) {
+                    SearchItemCardContent(item = item) {
 
                     }
                 }
             }
         } else {
-            // Si no hay resultados de búsqueda, mostrar otro contenido
-            Text(
+           /* Text(
                 text = "No se encontraron resultados",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,7 +107,9 @@ fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modi
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
-            )
+            )*/
+
+            ProductSearchScreen(productShearchViewModel = productShearchViewModel, navController = navController)
         }
     }
 }
@@ -122,5 +127,64 @@ fun SearchItemCard(item: ItemsModel,onItemClick: (String) -> Unit) {
 
             }
     )
+}
+
+
+@Composable
+fun SearchItemCardContent(item: ItemsModel, onItemClick: (String) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable {
+                onItemClick(item.title)
+            }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+
+                var imageproduct = item.thumbnail.replace("http://", "https://")
+
+            AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageproduct)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "image_Product",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(120.dp)
+                        .width(120.dp)
+
+                )
+
+
+
+
+
+
+            // Mostrar el título
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = item.title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            // Mostrar el precio
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "$ ${item.price}",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
+            )
+        }
+    }
 }
 
