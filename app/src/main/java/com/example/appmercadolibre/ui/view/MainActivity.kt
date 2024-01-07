@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.appmercadolibre.ui.navigation.AppNavigation
 import com.example.appmercadolibre.ui.screens.ProductShearchViewModel
+import com.example.appmercadolibre.ui.screens.SearchItemsViewModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val productShearchViewModel: ProductShearchViewModel by viewModels()
+    private val searchItemsViewModel: SearchItemsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -26,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation(productShearchViewModel)
+                    AppNavigation(productShearchViewModel , searchItemsViewModel)
                 }
             }
         }

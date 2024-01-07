@@ -8,10 +8,11 @@ import com.example.appmercadolibre.ui.screens.MainScreen
 import com.example.appmercadolibre.ui.screens.ProductDetailsScreen
 import com.example.appmercadolibre.ui.screens.ProductSearchScreen
 import com.example.appmercadolibre.ui.screens.ProductShearchViewModel
+import com.example.appmercadolibre.ui.screens.SearchItemsViewModel
 import com.example.appmercadolibre.ui.screens.SplashScreen
 
 @Composable
-fun AppNavigation(productShearchViewModel: ProductShearchViewModel) {
+fun AppNavigation(productShearchViewModel: ProductShearchViewModel, searchItemsViewModel: SearchItemsViewModel) {
     val navController = rememberNavController()
 
 
@@ -22,7 +23,7 @@ fun AppNavigation(productShearchViewModel: ProductShearchViewModel) {
         }
 
         composable(AppScreens.MainScreen.route) {
-            MainScreen(navController)
+            MainScreen(navController,searchItemsViewModel)
         }
         composable(AppScreens.ProductSearchScreen.route) {
             ProductSearchScreen(productShearchViewModel,navController)
