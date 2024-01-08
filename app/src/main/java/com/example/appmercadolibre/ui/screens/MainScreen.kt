@@ -36,7 +36,7 @@ import com.example.appmercadolibre.data.model.ItemsModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (navController: NavController,searchItemsViewModel: SearchItemsViewModel,productShearchViewModel: ProductShearchViewModel) {
+fun MainScreen (navController: NavController, searchItemsViewModel: SearchItemsViewModel, categoryShearchViewModel: CategoryShearchViewModel) {
 
 
     val searchText by searchItemsViewModel.searchText.collectAsState()
@@ -76,7 +76,7 @@ fun MainScreen (navController: NavController,searchItemsViewModel: SearchItemsVi
             MainScreenContent(
                 searchResults = searchResults.body()?.results.orEmpty(),
                 modifier = Modifier.padding(paddingValues),
-                productShearchViewModel,
+                categoryShearchViewModel,
                 navController
             )
     }
@@ -84,7 +84,7 @@ fun MainScreen (navController: NavController,searchItemsViewModel: SearchItemsVi
 
 
 @Composable
-fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modifier, productShearchViewModel: ProductShearchViewModel, navController: NavController) {
+fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modifier, categoryShearchViewModel: CategoryShearchViewModel, navController: NavController) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -93,7 +93,9 @@ fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modi
             // Si hay resultados de búsqueda, mostrar la lista de elementos
             LazyColumn {
                 itemsIndexed(searchResults) { index, item ->
-                    SearchItemCardContent(item = item) {
+                    SearchItemCardContent(item = item) {id->
+                        navController.navigate("item_detail_screen/$id")
+
 
                     }
                 }
@@ -109,7 +111,7 @@ fun MainScreenContent(searchResults: List<ItemsModel>, modifier: Modifier = Modi
                 fontSize = 18.sp
             )*/
 
-            ProductSearchScreen(productShearchViewModel = productShearchViewModel, navController = navController)
+            CategorySearchScreen(categoryShearchViewModel = categoryShearchViewModel, navController = navController)
         }
     }
 }
@@ -137,7 +139,7 @@ fun SearchItemCardContent(item: ItemsModel, onItemClick: (String) -> Unit) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                onItemClick(item.title)
+                onItemClick(item.id)
             }
     ) {
         Column(
@@ -160,11 +162,6 @@ fun SearchItemCardContent(item: ItemsModel, onItemClick: (String) -> Unit) {
                         .width(120.dp)
 
                 )
-
-
-
-
-
 
             // Mostrar el título
             Spacer(modifier = Modifier.height(8.dp))

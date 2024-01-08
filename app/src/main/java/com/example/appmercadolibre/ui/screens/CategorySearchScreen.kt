@@ -38,14 +38,14 @@ import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
 
 
 @Composable
-fun ProductSearchScreen(productShearchViewModel: ProductShearchViewModel,navController: NavController){
+fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, navController: NavController){
 
 
-    val childrenCategories by productShearchViewModel.childrenCategories.collectAsState(emptyList())
+    val childrenCategories by categoryShearchViewModel.childrenCategories.collectAsState(emptyList())
 
     LaunchedEffect(key1 = true) {
 
-        productShearchViewModel.fetchChildrenCategories()
+        categoryShearchViewModel.fetchChildrenCategories()
     }
 
 
@@ -59,7 +59,7 @@ fun ProductSearchScreen(productShearchViewModel: ProductShearchViewModel,navCont
 
 
        /* CategoryList(categories) { selectedCategory ->
-            productShearchViewModel.fetchDataByCategory(selectedCategory.id)
+            categoryShearchViewModel.fetchDataByCategory(selectedCategory.id)
         }*/
 
     }

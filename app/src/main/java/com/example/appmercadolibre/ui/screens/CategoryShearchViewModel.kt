@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductShearchViewModel @Inject constructor (
+class CategoryShearchViewModel @Inject constructor (
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getChildrenCategoriesUseCase: GetChildrenCategoriesUseCase
 
