@@ -11,6 +11,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +27,9 @@ class CategoryShearchViewModel @Inject constructor (
 
     private val _childrenCategories = MutableStateFlow<List<ChildrenCategoriesModel>>(emptyList())
     val childrenCategories: StateFlow<List<ChildrenCategoriesModel>> get() = _childrenCategories
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
 
 
     private val _error = MutableStateFlow<String?>(null)
@@ -45,6 +49,7 @@ class CategoryShearchViewModel @Inject constructor (
     fun fetchChildrenCategories() {
         viewModelScope.launch {
             try {
+                _isSearching.value = true
                 // Obtén las categorías principales de forma asíncrona
                 _categories.value = getCategoriesUseCase()
 
@@ -60,6 +65,7 @@ class CategoryShearchViewModel @Inject constructor (
 
                 // Actualiza el estado con todas las categorías hijas obtenidas
                 _childrenCategories.value = allChildrenCategories
+                _isSearching.value = false
             } catch (e: Exception) {
                 _error.value = "Error fetching children categories: ${e.message}"
             }

@@ -55,8 +55,9 @@ import com.example.appmercadolibre.data.model.ItemDetailModel
 import com.example.appmercadolibre.data.model.ItemsModel
 import com.example.appmercadolibre.data.model.PicturesModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
+import com.example.appmercadolibre.ui.theme.secondaryColor
+
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 
@@ -244,6 +245,7 @@ fun ImageSlider(images: List<String>, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(120.dp)
                         .width(120.dp)
+                        .padding(end = 8.dp)
 
                 )
             }
@@ -257,7 +259,7 @@ fun ImageSlider(images: List<String>, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { iteration ->
-                val color = if (pagerState.currentPage == iteration) Color.Blue else Color.LightGray
+                val color = if (pagerState.currentPage == iteration) secondaryColor else Color.LightGray
                 Box(
                     modifier = Modifier
                         .padding(2.dp)

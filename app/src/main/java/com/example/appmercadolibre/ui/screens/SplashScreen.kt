@@ -52,7 +52,7 @@ fun Splash(){
                 .height(250.dp)
                 .width(250.dp)
         )
-        Spacer(modifier = Modifier.height(35.dp))
+
 
     }
 }

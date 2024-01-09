@@ -1,22 +1,26 @@
 package com.example.appmercadolibre.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,6 +39,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appmercadolibre.data.model.ChildrenCategoriesModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
+import com.example.appmercadolibre.ui.theme.colorProgressBar
+import com.example.appmercadolibre.ui.theme.secondaryColor
 
 
 @Composable
@@ -42,6 +48,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
 
 
     val childrenCategories by categoryShearchViewModel.childrenCategories.collectAsState(emptyList())
+    val isSearching by categoryShearchViewModel.isSearching.collectAsState()
 
     LaunchedEffect(key1 = true) {
 
@@ -49,20 +56,40 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
     }
 
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(8.dp)
     ) {
-        // Lista de categorías
-       ScreenPortrait(childrenCategories = childrenCategories)
+
+        if (isSearching) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Alignment.Center)
+                ,
+                color = secondaryColor
+
+            )
+        }
+        else{
+                Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                // Lista de categorías
+                ScreenPortrait(childrenCategories = childrenCategories)
 
 
-       /* CategoryList(categories) { selectedCategory ->
-            categoryShearchViewModel.fetchDataByCategory(selectedCategory.id)
-        }*/
+                /* CategoryList(categories) { selectedCategory ->
+                     categoryShearchViewModel.fetchDataByCategory(selectedCategory.id)
+                 }*/
 
-    }
+            }
+        }}
+
+
+
 
 }
 
