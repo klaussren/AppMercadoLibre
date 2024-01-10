@@ -28,7 +28,7 @@ fun NoConnectionMessage() {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ico_no_found),
+            painter = painterResource(id = R.drawable.no_connection),
             contentDescription = "",
             modifier = Modifier
                 .height(250.dp)

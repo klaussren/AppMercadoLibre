@@ -78,33 +78,46 @@ fun ItemDetailScreen(navController: NavController, itemDetailViewModel: ItemDeta
     val itemID = arguments?.getString("id") ?: ""
 
     val resultItem by itemDetailViewModel.result.collectAsState()
+    val isConnected by itemDetailViewModel.isConnected.collectAsState()
+
+
 
     val error by itemDetailViewModel.error.collectAsState()
 
     LaunchedEffect(key1 = true) {
         itemDetailViewModel.clearResult()
+        itemDetailViewModel.checkConnectivity()
         itemDetailViewModel.getItemDetail(itemID)
     }
-    if (resultItem.isSuccessful) {
-        val responseBody = resultItem.body()
 
-        if (responseBody != null) {
+    if(isConnected) {
 
-            val itemDetailModel: ItemDetailModel = responseBody
+        if (resultItem.isSuccessful) {
+            val responseBody = resultItem.body()
 
-            // Configuración del botón de retroceso
+            if (responseBody != null) {
+
+                val itemDetailModel: ItemDetailModel = responseBody
+
+                // Configuración del botón de retroceso
 
 
-            ScreenPortrait(resultItem = itemDetailModel)  {
-                navController.popBackStack()
+                ScreenPortrait(resultItem = itemDetailModel) {
+                    navController.popBackStack()
+
+                }
 
             }
-
+        } else {
+            // Manejo de errores o indicador de carga
+            NoResultsMessage()
         }
-    } else {
-        // Manejo de errores o indicador de carga
-        NoResultsMessage()
     }
+    else {
+        NoConnectionMessage()
+    }
+
+
 }
 
 @Composable

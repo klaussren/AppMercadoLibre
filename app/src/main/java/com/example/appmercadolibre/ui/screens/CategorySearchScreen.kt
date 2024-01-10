@@ -62,17 +62,21 @@ import com.example.appmercadolibre.ui.theme.secondaryColor
 
 
 @Composable
-fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, navController: NavController){
+fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, navController: NavController) {
 
     val childrenCategories by categoryShearchViewModel.childrenCategories.collectAsState(emptyList())
     val isSearching by categoryShearchViewModel.isSearching.collectAsState()
     val itemsResults by categoryShearchViewModel.itemsResults.collectAsState()
     val isSearchingItems by categoryShearchViewModel.isSearchingItems.collectAsState()
-    var nameCategory: String=""
+    val isConnected by categoryShearchViewModel.isConnected.collectAsState()
+    var nameCategory: String = ""
     LaunchedEffect(key1 = true) {
         categoryShearchViewModel.clearChildrenCategories()
+        categoryShearchViewModel.checkConnectivity()
         categoryShearchViewModel.fetchChildrenCategories()
     }
+
+    if (isConnected) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -86,51 +90,55 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                 color = secondaryColor
             )
         } else {
-            // Mostrar la lista de artículos o categorías según el estado de la búsqueda
+            categoryShearchViewModel.checkConnectivity()
+            // Mostrar la lista de items segun categoria
             val itemsCategoryResult = itemsResults.body()?.results.orEmpty()
+            if(isConnected){
             if (itemsCategoryResult.isNotEmpty() && isSearchingItems) {
-            Column {
-                Row() {
-                IconButton(modifier = Modifier.padding(end = 8.dp),
-                    onClick = {
+                Column {
+                    Row() {
+                        IconButton(modifier = Modifier.padding(end = 8.dp),
+                            onClick = {
 
-                        navController.navigate("main_screen")
+                                navController.navigate("main_screen")
 
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.Black // Color del icono
+                            )
+                        }
+
+                        Text(modifier = Modifier.fillMaxWidth().padding(8.dp), text = nameCategory)
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.Black // Color del icono
-                    )
-                }
 
-                    Text(modifier = Modifier.fillMaxWidth().padding(8.dp), text = nameCategory)
-                }
+                    LazyColumn {
+                        itemsIndexed(itemsCategoryResult) { index, item ->
+                            ItemsCardContent(item = item) { id ->
+                                nameCategory = item.title
+                                navController.navigate("item_detail_screen/$id")
+                                categoryShearchViewModel.setIsSearchingItems(false)
 
-                LazyColumn {
-                    itemsIndexed(itemsCategoryResult) { index, item ->
-                        ItemsCardContent(item = item) { id ->
-                            nameCategory = item.title
-                            navController.navigate("item_detail_screen/$id")
-                            categoryShearchViewModel.setIsSearchingItems(false)
-
+                            }
                         }
                     }
                 }
-            }
 
             } else {
                 // Mostrar la lista de categorías si no hay resultados y no está buscando
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.categoriesText),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 8.dp, top = 8.dp)
-                    )
+                categoryShearchViewModel.checkConnectivity()
+                if(isConnected){
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.categoriesText),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                        )
                         // Lista de categorías
                         ScreenPortrait(childrenCategories = childrenCategories,
                             onCategoryClick = { id ->
@@ -141,9 +149,24 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                         )
 
 
+                    }
                 }
+                else{
+                    NoConnectionMessage()
+                }
+
+            }
+
+        }
+            else{
+                NoConnectionMessage()
             }
         }
+    }
+}
+    else {
+        NoConnectionMessage()
+
     }
 }
 

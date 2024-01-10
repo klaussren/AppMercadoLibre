@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appmercadolibre.data.model.ItemDetailModel
 import com.example.appmercadolibre.data.model.ItemListModel
+import com.example.appmercadolibre.domain.ConnectivityUseCase
 import com.example.appmercadolibre.domain.GetItemDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,12 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ItemDetailViewModel @Inject constructor(
-    private val getItemDetailUseCase: GetItemDetailUseCase
+    private val getItemDetailUseCase: GetItemDetailUseCase,
+    private val connectivityUseCase: ConnectivityUseCase
 ) : ViewModel() {
 
     private val _result = MutableStateFlow<Response<ItemDetailModel>>(Response.success(null))
     val result = _result.asStateFlow()
 
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected = _isConnected.asStateFlow()
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
 
@@ -39,6 +43,12 @@ class ItemDetailViewModel @Inject constructor(
 
     fun clearResult() {
         _result.value = Response.success(null)
+    }
+
+    fun checkConnectivity() {
+        viewModelScope.launch {
+            _isConnected.value = connectivityUseCase()
+        }
     }
 
 
