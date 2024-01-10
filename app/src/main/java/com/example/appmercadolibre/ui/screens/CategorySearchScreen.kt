@@ -34,6 +34,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,7 +72,9 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
     val itemsResults by categoryShearchViewModel.itemsResults.collectAsState()
     val isSearchingItems by categoryShearchViewModel.isSearchingItems.collectAsState()
     val isConnected by categoryShearchViewModel.isConnected.collectAsState()
-    var nameCategory: String = ""
+    var nameCategory by rememberSaveable {
+        mutableStateOf("")
+    }
     LaunchedEffect(key1 = true) {
         categoryShearchViewModel.clearChildrenCategories()
         categoryShearchViewModel.checkConnectivity()
@@ -110,20 +115,26 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                                 tint = Color.Black // Color del icono
                             )
                         }
+                        Text(
+                            text = nameCategory,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
 
-                        Text(modifier = Modifier.fillMaxWidth().padding(8.dp), text = nameCategory)
+                        )
+
                     }
 
                     LazyColumn {
                         itemsIndexed(itemsCategoryResult) { index, item ->
                             ItemsCardContent(item = item) { id ->
-                                nameCategory = item.title
                                 navController.navigate("item_detail_screen/$id")
                                 categoryShearchViewModel.setIsSearchingItems(false)
 
                             }
                         }
                     }
+
                 }
 
             } else {
@@ -140,7 +151,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                             modifier = Modifier.padding(start = 8.dp, top = 8.dp)
                         )
                         // Lista de categorías
-                        ScreenPortrait(childrenCategories = childrenCategories,
+                        ScreenPortrait(childrenCategories = childrenCategories,nameCategory = {nameCategory = it},
                             onCategoryClick = { id ->
                                 // Clic en una categoría
                                 categoryShearchViewModel.getItemsByCategory(id)
@@ -172,7 +183,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
 
 
 @Composable
-fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>, onCategoryClick: (String) -> Unit) {
+fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>,nameCategory: (String) -> Unit, onCategoryClick: (String) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -180,14 +191,18 @@ fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>, onCategory
             .fillMaxSize()
     ) {
 
-        ChildrenCategoriesList(childrenCategories, onCategoryClick = {onCategoryClick(it)})
+        ChildrenCategoriesList(
+            childrenCategories,
+            nameCategory = {nameCategory(it)},
+            onCategoryClick = {onCategoryClick(it)})
     }
 
 }
 
 
 @Composable
-fun ChildrenCategoriesList(childrenCategories: List<ChildrenCategoriesModel>, onCategoryClick: (String) -> Unit) {
+fun ChildrenCategoriesList(childrenCategories: List<ChildrenCategoriesModel>,nameCategory:(String)->Unit, onCategoryClick: (String) -> Unit) {
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp)
@@ -196,6 +211,7 @@ fun ChildrenCategoriesList(childrenCategories: List<ChildrenCategoriesModel>, on
             ChildrenCategoryItem(childrenCategories = childrenCategory){ id->
                 // Clic en una categoría
                 onCategoryClick(id)
+                nameCategory (childrenCategory.name)
 
             }
         }
@@ -275,6 +291,7 @@ private fun PreviewGeneral() {
                 ChildrenCategoriesModel("3", "Antigüedades y Colecciones","")
 
             ),
+            nameCategory = {},
             onCategoryClick = {})
     }
 
