@@ -63,6 +63,7 @@ import com.example.appmercadolibre.data.model.ItemDetailModel
 import com.example.appmercadolibre.data.model.ItemsModel
 import com.example.appmercadolibre.data.model.PicturesModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
+import com.example.appmercadolibre.ui.theme.primaryColor
 import com.example.appmercadolibre.ui.theme.secondaryColor
 
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -116,7 +117,7 @@ fun ScreenPortrait(resultItem: ItemDetailModel, onClickBackButton: (Boolean) -> 
     ) {
         // Configuración de la barra de navegación
         TopAppBar(
-            backgroundColor = Color.Yellow, // Color de fondo amarillo
+            backgroundColor = primaryColor, // Color de fondo amarillo
             title = { Text(text = "Detalle del Producto") }, // Título de la barra
             navigationIcon = {
                 // Botón de retroceso

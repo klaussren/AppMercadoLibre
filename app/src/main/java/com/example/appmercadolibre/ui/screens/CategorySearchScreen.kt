@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -67,7 +68,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
     val isSearching by categoryShearchViewModel.isSearching.collectAsState()
     val itemsResults by categoryShearchViewModel.itemsResults.collectAsState()
     val isSearchingItems by categoryShearchViewModel.isSearchingItems.collectAsState()
-
+    var nameCategory: String=""
     LaunchedEffect(key1 = true) {
         categoryShearchViewModel.clearChildrenCategories()
         categoryShearchViewModel.fetchChildrenCategories()
@@ -88,24 +89,48 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
             // Mostrar la lista de artículos o categorías según el estado de la búsqueda
             val itemsCategoryResult = itemsResults.body()?.results.orEmpty()
             if (itemsCategoryResult.isNotEmpty() && isSearchingItems) {
+            Column {
+                Row() {
+                IconButton(modifier = Modifier.padding(end = 8.dp),
+                    onClick = {
 
+                        navController.navigate("main_screen")
+
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.Black // Color del icono
+                    )
+                }
+
+                    Text(modifier = Modifier.fillMaxWidth().padding(8.dp), text = nameCategory)
+                }
 
                 LazyColumn {
                     itemsIndexed(itemsCategoryResult) { index, item ->
                         ItemsCardContent(item = item) { id ->
+                            nameCategory = item.title
                             navController.navigate("item_detail_screen/$id")
                             categoryShearchViewModel.setIsSearchingItems(false)
 
                         }
                     }
                 }
+            }
 
             } else {
                 // Mostrar la lista de categorías si no hay resultados y no está buscando
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-
+                    Text(
+                        text = stringResource(id = R.string.categoriesText),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                    )
                         // Lista de categorías
                         ScreenPortrait(childrenCategories = childrenCategories,
                             onCategoryClick = { id ->
@@ -131,12 +156,7 @@ fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>, onCategory
             .background(Color.White)
             .fillMaxSize()
     ) {
-        Text(
-            text = stringResource(id = R.string.categoriesText),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
-        )
+
         ChildrenCategoriesList(childrenCategories, onCategoryClick = {onCategoryClick(it)})
     }
 
