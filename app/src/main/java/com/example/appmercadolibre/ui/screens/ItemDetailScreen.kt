@@ -1,5 +1,7 @@
 package com.example.appmercadolibre.ui.screens
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,8 +28,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,9 +80,8 @@ fun ItemDetailScreen(navController: NavController, itemDetailViewModel: ItemDeta
 
     val error by itemDetailViewModel.error.collectAsState()
 
-
     LaunchedEffect(key1 = true) {
-
+        itemDetailViewModel.clearResult()
         itemDetailViewModel.getItemDetail(itemID)
     }
     if (resultItem.isSuccessful) {
@@ -84,27 +91,55 @@ fun ItemDetailScreen(navController: NavController, itemDetailViewModel: ItemDeta
 
             val itemDetailModel: ItemDetailModel = responseBody
 
-            ScreenPortrait(resultItem = itemDetailModel)
+            // Configuración del botón de retroceso
+
+
+            ScreenPortrait(resultItem = itemDetailModel)  {
+                navController.popBackStack()
+
+            }
 
         }
     } else {
         // Manejo de errores o indicador de carga
-        CircularProgressIndicator(
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
-        )
+        NoResultsMessage()
     }
 }
 
 @Composable
-fun ScreenPortrait(resultItem: ItemDetailModel) {
+fun ScreenPortrait(resultItem: ItemDetailModel, onClickBackButton: (Boolean) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
+        // Configuración de la barra de navegación
+        TopAppBar(
+            backgroundColor = Color.Yellow, // Color de fondo amarillo
+            title = { Text(text = "Detalle del Producto") }, // Título de la barra
+            navigationIcon = {
+                // Botón de retroceso
+                IconButton(
+                    onClick = {
+                        // Navegar hacia atrás al hacer clic en el botón de retroceso
+                        onClickBackButton(true)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.Black // Color del icono
+                    )
+                }
+            }
+        )
+
+
+
+
+
+
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
@@ -320,7 +355,9 @@ private fun PreviewGeneral() {
                 ),
                 warranty = "warranty"
 
-            )
+            ),
+            onClickBackButton = {}
+
         )
     }
 

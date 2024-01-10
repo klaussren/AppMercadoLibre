@@ -12,27 +12,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    /*  @GET("sites/MLA/search")
-      suspend fun searchItemsByCategory(
-          @Query("category") category: String
-      ): SearchResponse
-
-      @GET("sites/MLA/search")
-      suspend fun searchItemsByQuery(
-          @Query("q") query: String
-      ): SearchResponse
-
-      @GET("sites/MLA/search")
-      suspend fun searchItemsBySeller(
-          @Query("seller_id") sellerId: String
-      ): SearchResponse
-
-      @GET("sites/MLA/search")
-      suspend fun searchItemsBySellerAndCategory(
-          @Query("seller_id") sellerId: String,
-          @Query("category") category: String
-      ): SearchResponse
-  */
 
     @GET("sites/MLA/categories")
     suspend fun getCategories(): List<CategoriesModel>
@@ -41,6 +20,11 @@ interface ApiService {
     suspend fun getSubCategories(
         @Path("category_id") categoryId: String
     ): ChildrenCategoriesModel
+
+    @GET("sites/MLA/search?category=")
+    suspend fun getItemsByCategory(
+        @Query("category") query: String
+    ):  Response<ItemListModel>
 
 
     @GET("sites/MLA/search?q=")

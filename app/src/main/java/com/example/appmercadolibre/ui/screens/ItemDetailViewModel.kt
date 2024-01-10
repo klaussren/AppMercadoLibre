@@ -37,5 +37,9 @@ class ItemDetailViewModel @Inject constructor(
         }
     }
 
+    fun clearResult() {
+        _result.value = Response.success(null)
+    }
+
 
 }

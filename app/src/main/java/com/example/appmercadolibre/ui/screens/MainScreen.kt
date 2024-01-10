@@ -240,12 +240,6 @@ fun MainScreenContent(
 
         // Muestra las categorías solo si no estás buscando y no hay resultados de búsqueda
         if (showCategory && searchResults.isEmpty()) {
-            Text(
-                text = stringResource(id = R.string.categoriesText),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp, top = 8.dp)
-            )
             CategorySearchScreen(
                 categoryShearchViewModel = categoryShearchViewModel,
                 navController = navController
@@ -271,53 +265,7 @@ fun MainScreenContent(
     }
 }
 
-@Composable
-fun NoConnectionMessage() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ico_no_found),
-            contentDescription = "",
-            modifier = Modifier
-                .height(250.dp)
-                .width(250.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = R.string.noConnectionMessage),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-    }
-}
 
-@Composable
-fun NoResultsMessage() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ico_no_found),
-            contentDescription = "",
-            modifier = Modifier
-                .height(250.dp)
-                .width(250.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = R.string.noResultsMessage),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-    }
-}
 
 @Composable
 fun SearchItemCard(item: ItemsModel, onItemClick: (String) -> Unit) {
@@ -399,12 +347,7 @@ fun SearchItemCardContent(item: ItemsModel, onItemClick: (String) -> Unit) {
 private fun PreviewGeneral() {
 
     AppMercadoLibreTheme {
-        /* ScreenPortrait(
-             searchText = "",
-             isSearching = false,
-             startSearch = false
 
-         )*/
     }
 
 

@@ -19,6 +19,9 @@ class ApiClient @Inject constructor(private val apiService: ApiService) {
         return apiService.getSubCategories(categoryID)
     }
 
+    suspend fun getItemsByCategory(itemID: String):  Response<ItemListModel> {
+        return apiService.getItemsByCategory(itemID)
+    }
     suspend fun searchItemsByQuery(query: String): Response<ItemListModel> {
         return apiService.searchItemsByQuery(query)
     }

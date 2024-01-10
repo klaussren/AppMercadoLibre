@@ -20,6 +20,10 @@ class MeliRepository @Inject constructor(private val apiClient: ApiClient) {
         return apiClient.getChildrenCategories(categoryID)
     }
 
+    suspend fun getItemsByCategory(itemID: String): Response<ItemListModel> {
+        return apiClient.getItemsByCategory(itemID)
+    }
+
     suspend fun searchItemsByQuery(query: String): Response<ItemListModel> {
         return apiClient.searchItemsByQuery(query)
     }
