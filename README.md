@@ -18,9 +18,12 @@ AppMercadoLibre es una aplicación de ejemplo que utiliza la API de MercadoLibre
 - Inyeccion de dependencias con Daagger Hilt
 - Patron Repository
 - Patron Interactor: Casos de uso
+- Patron Observer : StateFlows
 - Clean Arquitecture
 - Navigation Component
 - Corourtines
+- Network:Retrofit
+- Test: Junit,MockK
 - Libreria LeackCanary para los merory leacks
 
 
