@@ -1,5 +1,6 @@
 package com.example.appmercadolibre.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appmercadolibre.data.model.ItemListModel
@@ -88,6 +89,7 @@ class SearchItemsViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 _error.value = "Error searching items: ${e.message}"
+                Log.e("SearchItemsViewModel", "${e.message}")
             }
         }
     }

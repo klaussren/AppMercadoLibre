@@ -21,6 +21,14 @@ android {
             useSupportLibrary true
         }
     }
+    signingConfigs {
+        release {
+            storeFile file("keystore/keystore")
+            storePassword "android2024"
+            keyAlias "androidkey"
+            keyPassword "android2024"
+        }
+    }
 
     buildTypes {
         release {
@@ -110,4 +118,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'androidx.palette:palette:1.0.0'
+
+    //LeackCanary
+   // debugImplementation 'com.squareup.leakcanary:leakcanary-android:3.0-alpha-1'
 }

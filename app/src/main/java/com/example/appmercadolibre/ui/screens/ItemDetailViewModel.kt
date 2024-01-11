@@ -1,5 +1,6 @@
 package com.example.appmercadolibre.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appmercadolibre.data.model.ItemDetailModel
@@ -51,6 +52,7 @@ class ItemDetailViewModel @Inject constructor(
             } catch (e: Exception) {
                 // Manejo de errores y actualización del estado de error
                 _error.value = "Error searching items: ${e.message}"
+                Log.e("DetailItemViewModel", "${e.message}")
             }
         }
     }

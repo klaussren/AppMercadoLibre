@@ -1,5 +1,6 @@
 package com.example.appmercadolibre.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appmercadolibre.data.model.CategoriesModel
@@ -88,6 +89,7 @@ class CategoryShearchViewModel @Inject constructor (
                 _isSearching.value = false
             } catch (e: Exception) {
                 _error.value = "Error fetching children categories: ${e.message}"
+                Log.e("CategoryShearchViewModel", "${e.message}")
             }
         }
     }
