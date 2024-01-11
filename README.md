@@ -17,7 +17,7 @@ AppMercadoLibre es una aplicación de ejemplo que utiliza la API de MercadoLibre
 - Patron de arquitectura: Model-View-ViewModel (MVVM)
 - Inyeccion de dependencias con Daagger Hilt
 - Patron Repository
-- Patron Interacto: Casos de uso
+- Patron Interactor: Casos de uso
 - Clean Arquitecture
 - Navigation Component
 - Corourtines
