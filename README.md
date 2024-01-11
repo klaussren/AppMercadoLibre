@@ -1,4 +1,4 @@
-# Aplicacion prueba técnica Mercado Libre
+# Aplicación prueba técnica Mercado Libre
 
 ## Descripción
 
