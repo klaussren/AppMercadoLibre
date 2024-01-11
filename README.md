@@ -1,4 +1,4 @@
-# AppMercadoLibre
+# Aplicacion prueba técnica Mercado Libre
 
 ## Descripción
 
