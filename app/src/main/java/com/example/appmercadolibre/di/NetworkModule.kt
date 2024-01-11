@@ -10,9 +10,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+/**
+ * Módulo Dagger Hilt que proporciona dependencias relacionadas con la red.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    /**
+     * Proporciona una instancia de OkHttpClient.
+     *
+     * @return [OkHttpClient] - Instancia de OkHttpClient.
+     */
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
@@ -25,6 +34,12 @@ object NetworkModule {
             .build()
     }
 
+    /**
+     * Proporciona una instancia de Retrofit.
+     *
+     * @param okHttpClient [OkHttpClient] - Instancia de OkHttpClient.
+     * @return [Retrofit] - Instancia de Retrofit.
+     */
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
@@ -35,6 +50,12 @@ object NetworkModule {
             .build()
     }
 
+    /**
+     * Proporciona una instancia de ApiService.
+     *
+     * @param retrofit [Retrofit] - Instancia de Retrofit.
+     * @return [ApiService] - Instancia de ApiService.
+     */
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {

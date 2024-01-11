@@ -1,8 +1,6 @@
 package com.example.appmercadolibre.ui.screens
 
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -33,6 +26,12 @@ import coil.request.ImageRequest
 import com.example.appmercadolibre.data.model.ItemsModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
 
+/**
+ * Composable que define la apariencia de una tarjeta de contenido de elemento de búsqueda.
+ *
+ * @param item Modelo de artículo para mostrar en la tarjeta.
+ * @param onItemClick Función de clic para manejar la acción cuando se hace clic en la tarjeta.
+ */
 @Composable
 fun ItemsCardContent(item: ItemsModel, onItemClick: (String) -> Unit) {
 

@@ -1,21 +1,17 @@
 package com.example.appmercadolibre.ui.screens
 
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,7 +26,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,34 +48,44 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appmercadolibre.R
 import com.example.appmercadolibre.data.model.ChildrenCategoriesModel
-import com.example.appmercadolibre.data.model.ItemsModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
-import com.example.appmercadolibre.ui.theme.colorProgressBar
 import com.example.appmercadolibre.ui.theme.secondaryColor
 
 
+/**
+ * Composable que representa la pantalla de búsqueda por categoría.
+ *
+ * @param categoryShearchViewModel ViewModel que gestiona la lógica de búsqueda por categoría.
+ * @param navController Controlador de navegación para manejar las transiciones entre pantallas.
+ */
 @Composable
 fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, navController: NavController) {
 
+    // Estado de las categorías de la categoría seleccionada.
     val childrenCategories by categoryShearchViewModel.childrenCategories.collectAsState(emptyList())
+    // Estado que indica si la búsqueda de categorías está en curso.
     val isSearching by categoryShearchViewModel.isSearching.collectAsState()
+    // Resultados de la búsqueda de artículos por categoría.
     val itemsResults by categoryShearchViewModel.itemsResults.collectAsState()
+    // Estado que indica si la búsqueda de Items está en curso.
     val isSearchingItems by categoryShearchViewModel.isSearchingItems.collectAsState()
+    // Estado que indica si hay conexión a Internet.
     val isConnected by categoryShearchViewModel.isConnected.collectAsState()
+    // Nombre de la categoría actualmente seleccionada.
     var nameCategory by rememberSaveable {
         mutableStateOf("")
     }
+    // Efecto de lanzamiento para la inicialización y carga de datos.
     LaunchedEffect(key1 = true) {
         categoryShearchViewModel.clearChildrenCategories()
         categoryShearchViewModel.checkConnectivity()
         categoryShearchViewModel.fetchChildrenCategories()
     }
-
+    // Comprobación de la conectividad antes de renderizar el contenido.
     if (isConnected) {
     Box(
         modifier = Modifier
@@ -88,6 +93,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
             .padding(8.dp)
     ) {
         if (isSearching) {
+            // Muestra un indicador de progreso durante la búsqueda de categorías.
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(50.dp)
@@ -95,13 +101,16 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                 color = secondaryColor
             )
         } else {
+            // Verifica la conectividad antes de renderizar el contenido principal.
             categoryShearchViewModel.checkConnectivity()
             // Mostrar la lista de items segun categoria
             val itemsCategoryResult = itemsResults.body()?.results.orEmpty()
+
             if(isConnected){
             if (itemsCategoryResult.isNotEmpty() && isSearchingItems) {
                 Column {
                     Row() {
+                        // Botón de retroceso para regresar a la pantalla de categoriras.
                         IconButton(modifier = Modifier.padding(end = 8.dp),
                             onClick = {
 
@@ -115,6 +124,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                                 tint = Color.Black // Color del icono
                             )
                         }
+                        // Muestra el nombre de la categoría actualmente seleccionada.
                         Text(
                             text = nameCategory,
                             fontSize = 16.sp,
@@ -124,10 +134,12 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                         )
 
                     }
-
+                    // Lista de Items de la categoría seleccionada.
                     LazyColumn {
                         itemsIndexed(itemsCategoryResult) { index, item ->
+                            // Renderiza cada elemento de la lista de artículos.
                             ItemsCardContent(item = item) { id ->
+                                // Navega a la pantalla de detalle del Item.
                                 navController.navigate("item_detail_screen/$id")
                                 categoryShearchViewModel.setIsSearchingItems(false)
 
@@ -144,6 +156,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                     Column(
                         modifier = Modifier.fillMaxSize()
                     ) {
+                        // Muestra un texto indicando que se trata de categorías.
                         Text(
                             text = stringResource(id = R.string.categoriesText),
                             fontSize = 16.sp,
@@ -163,6 +176,7 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
                     }
                 }
                 else{
+                    // Muestra un mensaje de falta de conexión si no hay conexión a Internet.
                     NoConnectionMessage()
                 }
 
@@ -170,18 +184,27 @@ fun CategorySearchScreen(categoryShearchViewModel: CategoryShearchViewModel, nav
 
         }
             else{
+                // Muestra un mensaje de falta de conexión si no hay conexión a Internet.
                 NoConnectionMessage()
             }
         }
     }
 }
     else {
+        // Muestra un mensaje de falta de conexión si no hay conexión a Internet.
         NoConnectionMessage()
 
     }
 }
 
 
+/**
+ * Composable que representa la pantalla en orientación vertical.
+ *
+ * @param childrenCategories Lista de categorías a mostrar.
+ * @param nameCategory Función para actualizar el nombre de la categoría actualmente seleccionada.
+ * @param onCategoryClick Función que se ejecuta al hacer clic en una categoría.
+ */
 @Composable
 fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>,nameCategory: (String) -> Unit, onCategoryClick: (String) -> Unit) {
 
@@ -191,6 +214,7 @@ fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>,nameCategor
             .fillMaxSize()
     ) {
 
+        // Muestra la lista de categorias con su imagen.
         ChildrenCategoriesList(
             childrenCategories,
             nameCategory = {nameCategory(it)},
@@ -200,9 +224,16 @@ fun ScreenPortrait(childrenCategories: List<ChildrenCategoriesModel>,nameCategor
 }
 
 
+/**
+ * Composable que muestra una lista de categorías en una cuadrícula vertical.
+ *
+ * @param childrenCategories Lista de categorías a mostrar.
+ * @param nameCategory Función para actualizar el nombre de la categoría actualmente seleccionada.
+ * @param onCategoryClick Función que se ejecuta al hacer clic en una categoría.
+ */
 @Composable
 fun ChildrenCategoriesList(childrenCategories: List<ChildrenCategoriesModel>,nameCategory:(String)->Unit, onCategoryClick: (String) -> Unit) {
-
+    // Cuadrícula vertical que muestra las categorías.
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp)
@@ -218,8 +249,15 @@ fun ChildrenCategoriesList(childrenCategories: List<ChildrenCategoriesModel>,nam
     }
 }
 
+/**
+ * Composable que representa un elemento individual en la lista de categorías.
+ *
+ * @param childrenCategories Modelo que contiene información sobre la categoría.
+ * @param onCategoryClick Función que se ejecuta al hacer clic en la categoría.
+ */
 @Composable
 fun ChildrenCategoryItem(childrenCategories: ChildrenCategoriesModel, onCategoryClick: (String) -> Unit) {
+    // Tarjeta que contiene la información de la categoría.
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -228,15 +266,12 @@ fun ChildrenCategoryItem(childrenCategories: ChildrenCategoriesModel, onCategory
             .clickable { onCategoryClick(childrenCategories.id) },
         elevation = 4.dp
     ) {
+        // Diseño de restricciones para posicionar la imagen y el texto.
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
         ) {
-
             val (imageCategory,textCategory )= createRefs()
-
-
-
-            // Mostrar la imagen con CoilImage centrada y del mismo tamaño para todos los elementos
+            // Muestra la imagen de la categoría.
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(childrenCategories.picture)
@@ -254,7 +289,7 @@ fun ChildrenCategoryItem(childrenCategories: ChildrenCategoriesModel, onCategory
                     .height(120.dp) // Ajusta el tamaño de la imagen
                     .clip(shape = CircleShape)
             )
-            // Mostrar el nombre debajo de la imagen con un máximo de 2 líneas
+            //   // Muestra el nombre de la categoría debajo de la imagen.
             Text(
                 text = "${childrenCategories.name}",
                 fontSize = 14.sp, // Ajusta el tamaño del texto según tus preferencias
@@ -278,7 +313,9 @@ fun ChildrenCategoryItem(childrenCategories: ChildrenCategoriesModel, onCategory
 
 
 
-
+/**
+ * Composable de vista previa para la pantalla principal.
+ */
 @Composable
 private fun PreviewGeneral() {
 
@@ -297,7 +334,9 @@ private fun PreviewGeneral() {
 
 
 }
-
+/**
+ * Composable de vista previa para dispositivos Nexus 5X.
+ */
 @Preview(name = "NEXUS_5", device = Devices.NEXUS_5X)
 @Composable
 private fun PreviewCompact() {

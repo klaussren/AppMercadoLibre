@@ -19,13 +19,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appmercadolibre.R
 
+/**
+ * Composable que muestra un mensaje cuando no hay resultados de búsqueda.
+ */
 @Composable
 fun NoResultsMessage() {
+    // Columna que ocupa toda la pantalla con contenido centrado vertical y horizontalmente.
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Imagen que representa la falta de resultados.
         Image(
             painter = painterResource(id = R.drawable.ico_no_found),
             contentDescription = "",
@@ -33,7 +38,9 @@ fun NoResultsMessage() {
                 .height(250.dp)
                 .width(250.dp)
         )
+        // Espaciador vertical para separar la imagen del texto.
         Spacer(modifier = Modifier.height(8.dp))
+        // Texto que informa al usuario sobre la falta de resultados.
         Text(
             text = stringResource(id = R.string.noResultsMessage),
             fontSize = 20.sp,

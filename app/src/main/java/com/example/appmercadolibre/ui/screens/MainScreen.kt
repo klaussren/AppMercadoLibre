@@ -1,24 +1,18 @@
 package com.example.appmercadolibre.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -38,35 +32,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.appmercadolibre.R
-import com.example.appmercadolibre.data.model.AttributesModel
-import com.example.appmercadolibre.data.model.ItemDetailModel
-import com.example.appmercadolibre.data.model.ItemListModel
 import com.example.appmercadolibre.data.model.ItemsModel
-import com.example.appmercadolibre.data.model.PicturesModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
-import com.example.appmercadolibre.ui.theme.colorProgressBar
 import com.example.appmercadolibre.ui.theme.colorTextBarSerach
 import com.example.appmercadolibre.ui.theme.primaryColor
 import com.example.appmercadolibre.ui.theme.secondaryColor
-import retrofit2.Response
 
 
+/**
+ * Composable que representa la pantalla principal (Main Screen) de la aplicación.
+ *
+ * @param navController Controlador de navegación para gestionar la transición entre pantallas.
+ * @param searchItemsViewModel ViewModel para la búsqueda de Items.
+ * @param categoryShearchViewModel ViewModel para la búsqueda de categorías.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -76,7 +61,7 @@ fun MainScreen(
     categoryShearchViewModel: CategoryShearchViewModel
 ) {
 
-
+// Recopilación de estados del ViewModel de búsqueda de artículos
     val searchText by searchItemsViewModel.searchText.collectAsState()
     val isSearching by searchItemsViewModel.isSearching.collectAsState()
     val startSearch by searchItemsViewModel.startSearch.collectAsState()
@@ -84,15 +69,13 @@ fun MainScreen(
     val showCategory by searchItemsViewModel.showCategory.collectAsState()
     val isConnected by searchItemsViewModel.isConnected.collectAsState()
 
+    // Efecto de lanzamiento para verificar la conectividad al inicio
     LaunchedEffect(key1 = true) {
 
         searchItemsViewModel.checkConnectivity()
     }
 
-
-
-    ScreenPortrait(searchText, isSearching, startSearch, searchResults)
-
+    // Composable principal que define la estructura visual de la pantalla
     Scaffold(
         topBar = {
             Surface(
@@ -100,6 +83,7 @@ fun MainScreen(
                     .fillMaxWidth(),
                 color = MaterialTheme.colorScheme.background
             ) {
+                // Barra de búsqueda integrada
                 SearchBar(
                     query = searchText,//texto que se muestra SearchBar
                     onQueryChange = { searchItemsViewModel.onSearchTextChange(it) }, // actualizar el valor de la barra con el searchText
@@ -154,7 +138,7 @@ fun MainScreen(
 
 
                 ) {
-
+                    // Lista de resultados de búsqueda
                     LazyColumn {
                         itemsIndexed(searchResults.body()?.results.orEmpty()) { index, item ->
 
@@ -170,9 +154,8 @@ fun MainScreen(
             }
         }
 
-    ) {
-
-            paddingValues ->
+    ) { paddingValues ->
+        // Verificar conectividad y mostrar contenido principal
         searchItemsViewModel.checkConnectivity()
         Box(
             modifier = Modifier
@@ -180,6 +163,7 @@ fun MainScreen(
                 .padding(8.dp)
         ) {
             if (startSearch) {
+                // Mostrar indicador de carga o mensaje de no conexión según el estado
                 if (!isConnected) {
                     NoConnectionMessage()
                 } else {
@@ -193,6 +177,7 @@ fun MainScreen(
                 }
 
             } else {
+                // Mostrar contenido principal según los resultados de búsqueda
                 MainScreenContent(
                     searchResults = searchResults.body()?.results.orEmpty(),
                     showCategory = showCategory,
@@ -207,19 +192,16 @@ fun MainScreen(
     }
 }
 
-
-@Composable
-fun ScreenPortrait(
-    searchText: String,
-    isSearching: Boolean,
-    startSearch: Boolean,
-    searchResults: Response<ItemListModel>
-) {
-
-
-}
-
-
+/**
+ * Composable que define el contenido principal de la pantalla principal (Main Screen).
+ *
+ * @param searchResults Lista de resultados de búsqueda.
+ * @param showCategory Indica si se debe mostrar la búsqueda por categoría.
+ * @param isConnected Indica si hay conexión a Internet.
+ * @param modifier Modificador para personalizar la apariencia.
+ * @param categoryShearchViewModel ViewModel para la búsqueda de categorías.
+ * @param navController Controlador de navegación para gestionar la transición entre pantallas.
+ */
 @Composable
 fun MainScreenContent(
     searchResults: List<ItemsModel>,
@@ -232,7 +214,7 @@ fun MainScreenContent(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        // Si no hay conexión a Internet, mostrar un mensaje de marca de agua
+        // Mostrar mensaje de no conexión si no hay Internet
         if (!isConnected) {
             NoConnectionMessage()
             return
@@ -251,13 +233,13 @@ fun MainScreenContent(
         if (searchResults.isNotEmpty()) {
             LazyColumn {
                 itemsIndexed(searchResults) { index, item ->
-                    SearchItemCardContent(item = item) { id ->
+                    ItemsCardContent(item = item) { id ->
                         navController.navigate("item_detail_screen/$id")
                     }
                 }
             }
         } else {
-            // Si estás buscando pero no hay resultados, mostrar mensaje de marca de agua
+            // Si se está buscando pero no hay resultados, mostrar un mensaje
 
             NoResultsMessage()
 
@@ -266,7 +248,12 @@ fun MainScreenContent(
 }
 
 
-
+/**
+ * Composable que define la apariencia de una tarjeta de elemento de búsqueda.
+ *
+ * @param item Modelo de artículo para mostrar en la tarjeta.
+ * @param onItemClick Función de clic para manejar la acción cuando se hace clic en la tarjeta.
+ */
 @Composable
 fun SearchItemCard(item: ItemsModel, onItemClick: (String) -> Unit) {
 
@@ -275,72 +262,21 @@ fun SearchItemCard(item: ItemsModel, onItemClick: (String) -> Unit) {
             modifier = Modifier.padding(end = 10.dp),
             imageVector = Icons.Default.History,
             contentDescription = "History Icon",
+            tint = colorTextBarSerach
         )
         Text(
             text = item.title,
             modifier = Modifier
                 .clickable {
                     onItemClick(item.title)
-                }
+                },
+            color = colorTextBarSerach
         )
 
     }
 
 }
 
-
-@Composable
-fun SearchItemCardContent(item: ItemsModel, onItemClick: (String) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable {
-                onItemClick(item.id)
-            }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-
-            var imageproduct = item.thumbnail.replace("http://", "https://")
-
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageproduct)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "image_Product",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(120.dp)
-                    .width(120.dp)
-
-            )
-
-            // Mostrar el título
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = item.title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            // Mostrar el precio
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "$ ${item.price}",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.Gray
-            )
-        }
-    }
-}
 
 
 @Composable

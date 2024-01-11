@@ -1,16 +1,12 @@
 package com.example.appmercadolibre.ui.screens
 
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,16 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -35,15 +28,12 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -52,44 +42,44 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appmercadolibre.data.model.AttributesModel
-import com.example.appmercadolibre.data.model.ChildrenCategoriesModel
 import com.example.appmercadolibre.data.model.ItemDetailModel
-import com.example.appmercadolibre.data.model.ItemsModel
 import com.example.appmercadolibre.data.model.PicturesModel
 import com.example.appmercadolibre.ui.theme.AppMercadoLibreTheme
 import com.example.appmercadolibre.ui.theme.primaryColor
 import com.example.appmercadolibre.ui.theme.secondaryColor
-
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 
-
+/**
+ * Composable que representa la pantalla de detalles del Item.
+ *
+ * @param navController Controlador de navegación de Compose.
+ * @param itemDetailViewModel ViewModel que gestiona la lógica de los detalles del Item.
+ */
 @Composable
 fun ItemDetailScreen(navController: NavController, itemDetailViewModel: ItemDetailViewModel) {
 
+    // Obtener el ID del Item de los argumentos de navegación
     val arguments = navController.currentBackStackEntry?.arguments
     val itemID = arguments?.getString("id") ?: ""
-
+    // Observar el resultado de la búsqueda de detalles del Item y la conectividad a Internet
     val resultItem by itemDetailViewModel.result.collectAsState()
     val isConnected by itemDetailViewModel.isConnected.collectAsState()
 
 
-
-    val error by itemDetailViewModel.error.collectAsState()
-
+    // Efecto de lanzamiento para la inicialización y carga de datos.
     LaunchedEffect(key1 = true) {
         itemDetailViewModel.clearResult()
         itemDetailViewModel.checkConnectivity()
         itemDetailViewModel.getItemDetail(itemID)
     }
-
+    // Verificar la conectividad y mostrar la pantalla correspondiente
     if(isConnected) {
 
         if (resultItem.isSuccessful) {
@@ -98,9 +88,6 @@ fun ItemDetailScreen(navController: NavController, itemDetailViewModel: ItemDeta
             if (responseBody != null) {
 
                 val itemDetailModel: ItemDetailModel = responseBody
-
-                // Configuración del botón de retroceso
-
 
                 ScreenPortrait(resultItem = itemDetailModel) {
                     navController.popBackStack()
@@ -114,12 +101,19 @@ fun ItemDetailScreen(navController: NavController, itemDetailViewModel: ItemDeta
         }
     }
     else {
+        // Pantalla sin conexión
         NoConnectionMessage()
     }
 
 
 }
 
+/**
+ * Composable que representa la pantalla de detalles del Item en modo retrato.
+ *
+ * @param resultItem Detalles del Item.
+ * @param onClickBackButton Acción a realizar al hacer clic en el botón de retroceso.
+ */
 @Composable
 fun ScreenPortrait(resultItem: ItemDetailModel, onClickBackButton: (Boolean) -> Unit) {
     Column(
@@ -148,11 +142,6 @@ fun ScreenPortrait(resultItem: ItemDetailModel, onClickBackButton: (Boolean) -> 
                 }
             }
         )
-
-
-
-
-
 
         ConstraintLayout(
             modifier = Modifier
@@ -246,16 +235,22 @@ fun ScreenPortrait(resultItem: ItemDetailModel, onClickBackButton: (Boolean) -> 
     }
 }
 
-
+/**
+ * Composable que representa un slider de imágenes.
+ *
+ * @param images Lista de URLs de imágenes.
+ * @param modifier Modificador para personalizar la apariencia del slider.
+ */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun ImageSlider(images: List<String>, modifier: Modifier = Modifier) {
-
+// Implementación del slider de imágenes con HorizontalPager
     val pagerState = rememberPagerState(
         initialPage = 0
     ) {
         images.size
     }
+    // Cada 2 segundos cambia la imagen
     LaunchedEffect(Unit) {
         while (true) {
             yield()
@@ -325,7 +320,9 @@ fun ImageSlider(images: List<String>, modifier: Modifier = Modifier) {
 
 }
 
-
+/**
+ * Composable de vista previa para la pantalla de detalles del Item.
+ */
 @Composable
 private fun PreviewGeneral() {
 
@@ -378,6 +375,9 @@ private fun PreviewGeneral() {
 
 }
 
+/**
+ * Composable de vista previa para dispositivos Nexus 5X.
+ */
 @Preview(name = "NEXUS_5", device = Devices.NEXUS_5X)
 @Composable
 private fun PreviewCompact() {
